@@ -21,7 +21,7 @@ def chat(query):
     chatStr += f"Jarvis: {query}\n Prime : "
     
     # Configure Gemini API with your API key
-    genai.configure(api_key="")
+    genai.configure(api_key="YOUR_API_KEY")
     
     # Set up the model
     generation_config = {
@@ -135,34 +135,13 @@ def takeCommand():
     with sr.Microphone() as source:
         r.pause_threshold = 0.6
         audio = r.listen(source)
-        query = ""
-        detected_lang = "en"  # Default to English
         try:
             print("Recognizing...")
-            # Initially recognize speech using the default language (English)
-            query = r.recognize_google(audio, language="en-US")
-            detected_lang = detect(query)  # Detect language of the recognized text
-            print(f"Detected language: {detected_lang}")
+            query = r.recognize_google(audio, language="en-in")
             print(f"User said: {query}")
+            return query
         except Exception as e:
-            print("Some Error Occurred. Sorry from Prime")
-            query = "Some Error Occurred. Sorry from Prime"
-        return query, detected_lang
-
-def say(text, lang="en"):
-    # Setting the language for TTS based on the detected language
-    # This is a simplified example; you may need to map your detected languages to the specific voice IDs or names
-    voices = engine.getProperty('voices')
-    if lang.startswith("en"):
-        voice = [voice for voice in voices if 'en' in voice.id][0].id  # Assuming an English voice is available
-    elif lang.startswith("es"):
-        voice = [voice for voice in voices if 'es' in voice.id][0].id  # Assuming a Spanish voice is available
-    else:
-        voice = voices[0].id  # Default voice
-
-    engine.setProperty('voice', voice)
-    engine.say(text)
-    engine.runAndWait()
+            return "Some Error Occurred. Sorry from Prime "
 
 if __name__ == '__main__':
     print('Welcome to Prime  A.I')
@@ -170,8 +149,8 @@ if __name__ == '__main__':
     
     while True:
         print("Listening...")
-        query, detected_lang = takeCommand()
-        say("Your response goes here", lang=detected_lang)
+        query = takeCommand()
+        
         sites = [["youtube", "https://www.youtube.com"], ["wikipedia", "https://www.wikipedia.com"], ["google", "https://www.google.com"]]
         
         for site in sites:
